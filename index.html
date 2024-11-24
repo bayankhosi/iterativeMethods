@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iterative Methods for Solving Linear Systems</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #007bff;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            margin: 20px 0;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        input[type="number"] {
+            width: 60px;
+            margin: 5px;
+            padding: 5px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e9ecef;
+            border-left: 5px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Iterative Methods for Solving Linear Systems</h1>
+</header>
+
+<nav>
+    <a href="#jacobi">Jacobi Method</a>
+    <a href="#gauss-seidel">Gauss-Seidel Method</a>
+    <a href="#convergence">Convergence Criteria</a>
+    <a href="#comparison">Comparison</a>
+</nav>
+
+<div class="container" id="jacobi">
+    <h2>Jacobi Method</h2>
+    <p>Learn about the Jacobi method for solving linear equations.</p>
+    <h3>Input Linear System</h3>
+    <p>Enter the coefficients of the equations in the format:</p>
+    <p><i>Ax1 + Bx2 + Cx3 = D</i></p>
+    <div>
+        <input type="number" id="a11" placeholder="A11">
+        <input type="number" id="a12" placeholder="A12">
+        <input type="number" id="b1" placeholder="B1">
+        <br>
+        <input type="number" id="a21" placeholder="A21">
+        <input type="number" id="a22" placeholder="A22">
+        <input type="number" id="b2" placeholder="B2">
+        <br>
+        <input type="number" id="a31" placeholder="A31">
+        <input type="number" id="a32" placeholder="A32">
+        <input type="number" id="b3" placeholder="B3">
+    </div>
+    <button onclick="jacobiMethod()">Solve with Jacobi</button>
+    <div class="result" id="jacobiResult"></div>
+</div>
+
+<div class="container" id="gauss-seidel">
+    <h2>Gauss-Seidel Method</h2>
+    <p>Learn about the Gauss-Seidel method for solving linear equations.</p>
+    <h3>Input Linear System</h3>
+    <div>
+        <input type="number" id="gauss_a11" placeholder="A11">
+        <input type="number" id="gauss_a12" placeholder="A12">
+        <input type="number" id="gauss_b1" placeholder="B1">
+        <br>
+        <input type="number" id="gauss_a21" placeholder="A21">
+        <input type="number" id="gauss_a22" placeholder="A22">
+        <input type="number" id="gauss_b2" placeholder="B2">
+        <br>
+        <input type="number" id="gauss_a31" placeholder="A31">
+        <input type="number" id="gauss_a32" placeholder="A32">
+        <input type="number" id="gauss_b3" placeholder="B3">
+    </div>
+    <button onclick="gaussSeidelMethod()">Solve with Gauss-Seidel</button>
+    <div class="result" id="gaussResult"></div>
+</div>
+
+<div class="container" id="convergence">
+    <h2>Convergence Criteria</h2>
+    <p>Understand the conditions for convergence of iterative methods.</p>
+    <p>A matrix is considered diagonally dominant if for each row i:</p>
+    <p>|a<sub>ii</sub>| ≥ Σ|a<sub>ij</sub>| for all j ≠ i.</p>
+</div>
+
+<div class="container" id="comparison">
+    <h2>Comparison of Methods</h2>
+    <p>Compare Jacobi and Gauss-Seidel methods.</p>
+    <ul>
+        <li>Jacobi Method: Simpler to implement and easier to parallelize.</li>
+        <li>Gauss-Seidel Method: Often converges faster using the latest values.</li>
+    </ul>
+</div>
+
+<script>
+    function jacobiMethod() {
+        const a11 = parseFloat(document.getElementById("a11").value);
+        const a12 = parseFloat(document.getElementById("a12").value);
+        const b1 = parseFloat(document.getElementById("b1").value);
+        const a21 = parseFloat(document.getElementById("a21").value);
+        const a22 = parseFloat(document.getElementById("a22").value);
+        const b2 = parseFloat(document.getElementById("b2").value);
+        const a31 = parseFloat(document.getElementById("a31").value);
+        const a32 = parseFloat(document.getElementById("a32").value);
+        const b3 = parseFloat(document.getElementById("b3").value);
+
+        let x1 = 0, x2 = 0, x3 = 0;
+        const maxIterations = 25;
+        let result = '';
+
+        for (let k = 0; k < maxIterations; k++) {
+            const newX1 = (b1 - a12 * x2) / a11;
+            const newX2 = (b2 - a21 * newX1) / a22;
+            const newX3 = (b3 - a31 * newX1 - a32 * newX2) / a32;
+
+            result += `Iteration ${k + 1}: x1 = ${newX1.toFixed(4)}, x2 = ${newX2.toFixed(4)}, x3 = ${newX3.toFixed(4)}<br>`;
+            x1 = newX1;
+            x2 = newX2;
+            x3 = newX3;
+        }
+
+        document.getElementById("jacobiResult").innerHTML = result;
+    }
+
+    function gaussSeidelMethod() {
+        const a11 = parseFloat(document.getElementById("gauss_a11").value);
+        const a12 = parseFloat(document.getElementById("gauss_a12").value);
+        const b1 = parseFloat(document.getElementById("gauss_b1").value);
+        const a21 = parseFloat(document.getElementById("gauss_a21").value);
+        const a22 = parseFloat(document.getElementById("gauss_a22").value);
+        const b2 = parseFloat(document.getElementById("gauss_b2").value);
+        const a31 = parseFloat(document.getElementById("gauss_a31").value);
+        const a32 = parseFloat(document.getElementById("gauss_a32").value);
+        const b3 = parseFloat(document.getElementById("gauss_b3").value);
+
+        let x1 = 0, x2 = 0, x3 = 0;
+        const maxIterations = 25;
+        let result = '';
+
+        for (let k = 0; k < maxIterations; k++) {
+            x1 = (b1 - a12 * x2) / a11;
+            x2 = (b2 - a21 * x1) / a22;
+            x3 = (b3 - a31 * x1 - a32 * x2) / a32;
+
+            result += `Iteration ${k + 1}: x1 = ${x1.toFixed(4)}, x2 = ${x2.toFixed(4)}, x3 = ${x3.toFixed(4)}<br>`;
+        }
+
+        document.getElementById("gaussResult").innerHTML = result;
+    }
+</script>
+
+</body>
+</html>
